@@ -1,0 +1,52 @@
+pkgname=py-cmocean
+_pkgname=cmocean
+pkgver=1.1
+pkgrel=1
+pkgdesc="Colormaps for Oceanography"
+url="https://github.com/matplotlib/cmocean"
+arch="noarch"
+license="MIT"
+depends="py-matplotlib py-numpy"
+makedepends="python2-dev python3-dev py-setuptools"
+subpackages="py2-${pkgname#py-}:_py2 py3-${pkgname#py-}:_py3"
+source="https://files.pythonhosted.org/packages/source/c/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	cd "$builddir" || return 1
+	python2 setup.py build || return 1
+	python3 setup.py build || return 1
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+check() {
+	cd "$builddir"
+	python2 setup.py test
+	python3 setup.py test
+}
+
+_py2() {
+	replaces="$pkgname"
+	depends="${depends//py-/py2-}"
+	_py python2
+}
+
+_py3() {
+	depends="${depends//py-/py3-}"
+	_py python3
+}
+
+_py() {
+	local python="$1"
+	pkgdesc="$pkgdesc (for $python)"
+	depends="$depends $python"
+	install_if="$pkgname=$pkgver-r$pkgrel $python"
+
+	cd "$builddir"
+	$python setup.py install --prefix=/usr --root="$subpkgdir"
+}
+
+sha512sums="ffa101230e7a03c32923d91967ebcdef924032334304300ff9d14dc113f1b49c9edf659980dcb47b3a99f28fa98495609f29849086c997d209143376ae698be8  cmocean-1.1.tar.gz"
