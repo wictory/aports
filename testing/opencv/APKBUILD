@@ -11,7 +11,8 @@ depends=""
 depends_dev=""
 makedepends="cmake ffmpeg-dev libpng-dev libjpeg-turbo-dev tiff-dev jasper-dev
 	libgomp openexr-dev gtk+3.0-dev gtk+-dev gst-plugins-base-dev
-	libgphoto2-dev v4l-utils-dev libwebp-dev libdc1394-dev doxygen"
+	libgphoto2-dev v4l-utils-dev libwebp-dev libdc1394-dev doxygen
+	python2-dev python3-dev py-numpy-dev"
 install=""
 subpackages="$pkgname-dev $pkgname-libs"
 source="opencv-$pkgver.tar.gz::https://github.com/opencv/opencv/archive/$pkgver.tar.gz"
@@ -37,12 +38,12 @@ build() {
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DBUILD_SHARED_LIBS=True \
+		-DBUILD_opencv_python2=True \
+		-DBUILD_opencv_python3=True \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
 		-DCMAKE_C_FLAGS="$CFLAGS" \
 		-DENABLE_PRECOMPILED_HEADERS=OFF \
-		-DWITH_OPENMP=ON \
-		-WITH_OPENCL=ON \
 		-DWITH_IPP=OFF \
 		$_sse \
 		|| return 1
